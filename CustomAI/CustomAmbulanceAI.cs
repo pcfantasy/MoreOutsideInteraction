@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MoreOutsideInteraction
+namespace MoreOutsideInteraction.CustomAI
 {
     public class CustomAmbulanceAI : AmbulanceAI
     {

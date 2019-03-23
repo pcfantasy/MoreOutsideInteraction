@@ -8,6 +8,8 @@ using System;
 using System.Linq;
 using ColossalFramework.Math;
 using System.Collections.Generic;
+using MoreOutsideInteraction.Util;
+using MoreOutsideInteraction.CustomAI;
 
 namespace MoreOutsideInteraction
 {
@@ -30,6 +32,7 @@ namespace MoreOutsideInteraction
         public static List<Detour> Detours { get; set; }
         public static LoadMode CurrentLoadMode;
         public static bool DetourInited = false;
+        public static bool HarmonyDetourInited = false;
         public static bool isRealCityRunning = false;
 
         public override void OnCreated(ILoading loading)
@@ -48,6 +51,7 @@ namespace MoreOutsideInteraction
                 {
                     DebugLog.LogToFileOnly("OnLevelLoaded");
                     InitDetour();
+                    HarmonyInitDetour();
                     MoreOutsideInteraction.LoadSetting();
                     if (mode == LoadMode.NewGame)
                     {
@@ -65,6 +69,7 @@ namespace MoreOutsideInteraction
                 if (CurrentLoadMode == LoadMode.LoadGame || CurrentLoadMode == LoadMode.NewGame)
                 {
                     RevertDetour();
+                    HarmonyRevertDetour();
                 }
             }
 
@@ -79,6 +84,26 @@ namespace MoreOutsideInteraction
         private bool CheckRealCityIsLoaded()
         {
             return this.Check3rdPartyModLoaded("RealCity", true);
+        }
+
+        public void HarmonyInitDetour()
+        {
+            if (!HarmonyDetourInited)
+            {
+                DebugLog.LogToFileOnly("Init harmony detours");
+                HarmonyDetours.Apply();
+                HarmonyDetourInited = true;
+            }
+        }
+
+        public void HarmonyRevertDetour()
+        {
+            if (HarmonyDetourInited)
+            {
+                DebugLog.LogToFileOnly("Revert harmony detours");
+                HarmonyDetours.DeApply();
+                HarmonyDetourInited = false;
+            }
         }
 
         public void InitDetour()

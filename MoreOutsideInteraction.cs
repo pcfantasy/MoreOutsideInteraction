@@ -8,6 +8,7 @@ using System.Linq;
 using ColossalFramework.Math;
 using UnityEngine;
 using ColossalFramework.Globalization;
+using MoreOutsideInteraction.Util;
 
 namespace MoreOutsideInteraction
 {
@@ -15,8 +16,6 @@ namespace MoreOutsideInteraction
     {
         public static bool IsEnabled = false;
         public static bool updateOnce = false;
-        public static int languageIdex = 0;
-
         public static bool deadFromOutside = false;
         public static bool garbageFromOutside = false;
         public static bool garbageToOutside = false;
@@ -42,15 +41,12 @@ namespace MoreOutsideInteraction
             fs.Close();
             LoadSetting();
             SaveSetting();
-            Language.LanguageSwitch((byte)languageIdex);
         }
 
         public void OnDisabled()
         {
             IsEnabled = false;
-            Language.LanguageSwitch((byte)languageIdex);
         }
-
 
         public static void SaveSetting()
         {
@@ -144,27 +140,16 @@ namespace MoreOutsideInteraction
             }
         }
 
-
         public void OnSettingsUI(UIHelperBase helper)
         {
-
             LoadSetting();
-            if (SingletonLite<LocaleManager>.instance.language.Contains("zh"))
-            {
-                Language.LanguageSwitch(1);
-            }
-            else
-            {
-                Language.LanguageSwitch(0);
-            }
-
-            UIHelperBase group1 = helper.AddGroup(Language.OptionUI[0]);
-            group1.AddCheckbox(Language.OptionUI[1], deadFromOutside, (index) => deadFromOutsideConnection(index));
-            group1.AddCheckbox(Language.OptionUI[2], garbageFromOutside, (index) => garbageFromOutsideConnection(index));
-            group1.AddCheckbox(Language.OptionUI[3], garbageToOutside, (index) => garbageToOutsideConnection(index));
-            group1.AddCheckbox(Language.OptionUI[4], crimeToOutside, (index) => crimeToOutsideConnection(index));
-            group1.AddCheckbox(Language.OptionUI[5], sickToOutside, (index) => sickToOutsideConnection(index));
-            group1.AddCheckbox(Language.OptionUI[6], fireToOutside, (index) => fireToOutsideConnection(index));
+            UIHelperBase group = helper.AddGroup(Localization.Get("SELECT_TO_ENABLE"));
+            group.AddCheckbox(Localization.Get("DEAD_FROM_OUTSIDE"), deadFromOutside, (index) => deadFromOutsideConnection(index));
+            group.AddCheckbox(Localization.Get("GARBAGE_FROM_OUTSIDE"), garbageFromOutside, (index) => garbageFromOutsideConnection(index));
+            group.AddCheckbox(Localization.Get("GARBAGE_TO_OUTSIDE"), garbageToOutside, (index) => garbageToOutsideConnection(index));
+            group.AddCheckbox(Localization.Get("POLICE_TO_OUTSIDE"), crimeToOutside, (index) => crimeToOutsideConnection(index));
+            group.AddCheckbox(Localization.Get("HOSPITAL_TO_OUTSIDE"), sickToOutside, (index) => sickToOutsideConnection(index));
+            group.AddCheckbox(Localization.Get("FIRESTATION_TO_OUTSIDE"), fireToOutside, (index) => fireToOutsideConnection(index));
             SaveSetting();
         }
 
@@ -203,6 +188,5 @@ namespace MoreOutsideInteraction
             fireToOutside = index;
             SaveSetting();
         }
-
     }
 }

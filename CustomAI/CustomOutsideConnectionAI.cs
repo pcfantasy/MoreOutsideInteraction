@@ -1,7 +1,4 @@
 ﻿using ColossalFramework;
-using ColossalFramework.Globalization;
-using ColossalFramework.UI;
-using ICities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,162 +6,170 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace MoreOutsideInteraction
+namespace MoreOutsideInteraction.CustomAI
 {
-    public class MoreOutsideInteractionThreading : ThreadingExtensionBase
+    public class CustomOutsideConnectionAI : BuildingAI
     {
-        public static bool haveGarbageBuilding = true;
-        public static bool haveFireBuilding = true;
-        public static bool haveCemetryBuilding = true;
-        public static bool haveHospitalBuilding = true;
-        public static bool havePoliceBuilding = true;
-        public static bool haveGarbageBuildingTemp = true;
-        public static bool haveFireBuildingTemp = true;
-        public static bool haveCemetryBuildingTemp = true;
-        public static bool haveHospitalBuildingTemp = true;
-        public static bool havePoliceBuildingTemp = true;
-        public static bool isFirstTime = true;
-
-        public override void OnBeforeSimulationFrame()
+        public override void ModifyMaterialBuffer(ushort buildingID, ref Building data, TransferManager.TransferReason material, ref int amountDelta)
         {
-            base.OnBeforeSimulationFrame();
-            if (Loader.CurrentLoadMode == LoadMode.LoadGame || Loader.CurrentLoadMode == LoadMode.NewGame)
+            if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
             {
-                if (MoreOutsideInteraction.IsEnabled)
+                if (material == TransferManager.TransferReason.Garbage)
                 {
-                    //Check language
-                    CheckLanguage();
-                    CheckDetour();
-                }
-            }
-        }
-
-        public static void CheckLanguage()
-        {
-            if (SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MoreOutsideInteraction.languageIdex == 1))
-            {
-            }
-            else if (!SingletonLite<LocaleManager>.instance.language.Contains("zh") && (MoreOutsideInteraction.languageIdex != 1))
-            {
-            }
-            else
-            {
-                MoreOutsideInteraction.languageIdex = (byte)(SingletonLite<LocaleManager>.instance.language.Contains("zh") ? 1 : 0);
-                Language.LanguageSwitch((byte)MoreOutsideInteraction.languageIdex);
-            }
-        }
-
-        public void CheckDetour()
-        {
-            if (isFirstTime && Loader.DetourInited)
-            {
-                isFirstTime = false;
-                DebugLog.LogToFileOnly("ThreadingExtension.OnBeforeSimulationFrame: First frame detected. Checking detours.");
-                List<string> list = new List<string>();
-                foreach (Loader.Detour current in Loader.Detours)
-                {
-                    if (!RedirectionHelper.IsRedirected(current.OriginalMethod, current.CustomMethod))
+                    if (data.m_garbageBuffer < 0)
                     {
-                        list.Add(string.Format("{0}.{1} with {2} parameters ({3})", new object[]
+                        DebugLog.LogToFileOnly("Error: garbarge < 0 in outside building, should be wrong");
+                        amountDelta = 0;
+                    }
+                    else
+                    {
+                        if (data.m_garbageBuffer + amountDelta <= 0)
                         {
-                    current.OriginalMethod.DeclaringType.Name,
-                    current.OriginalMethod.Name,
-                    current.OriginalMethod.GetParameters().Length,
-                    current.OriginalMethod.DeclaringType.AssemblyQualifiedName
-                        }));
+                            amountDelta = -data.m_garbageBuffer;
+                        }
+                        else
+                        {
+
+                        }
+                        data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + amountDelta);
                     }
                 }
-                DebugLog.LogToFileOnly(string.Format("ThreadingExtension.OnBeforeSimulationFrame: First frame detected. Detours checked. Result: {0} missing detours", list.Count));
-                if (list.Count > 0)
+                else if (material == TransferManager.TransferReason.Crime)
                 {
-                    string error = "More Outside Interaction detected an incompatibility with another mod! You can continue playing but it's NOT recommended. RealCity will not work as expected. See RealCity.log for technical details.";
-                    DebugLog.LogToFileOnly(error);
-                    string text = "The following methods were overriden by another mod:";
-                    foreach (string current2 in list)
+                    if (amountDelta < 0)
                     {
-                        text += string.Format("\n\t{0}", current2);
-                    }
-                    DebugLog.LogToFileOnly(text);
-                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", text, true);
-                }
-            }
-        }
-
-        public override void OnAfterSimulationFrame()
-        {
-            base.OnAfterSimulationFrame();
-            if (Loader.CurrentLoadMode == LoadMode.LoadGame || Loader.CurrentLoadMode == LoadMode.NewGame)
-            {
-                if (MoreOutsideInteraction.IsEnabled)
-                {
-                    uint currentFrameIndex = Singleton<SimulationManager>.instance.m_currentFrameIndex;
-                    int num4 = (int)(currentFrameIndex & 255u);
-                    int num5 = num4 * 192;
-                    int num6 = (num4 + 1) * 192 - 1;
-                    BuildingManager instance = Singleton<BuildingManager>.instance;
-
-                    for (int i = num5; i <= num6; i = i + 1)
-                    {
-                        if (instance.m_buildings.m_buffer[i].m_flags.IsFlagSet(Building.Flags.Created) && (!instance.m_buildings.m_buffer[i].m_flags.IsFlagSet(Building.Flags.Deleted)))
+                        if (data.m_crimeBuffer < 0)
                         {
-                            if (instance.m_buildings.m_buffer[i].m_flags.IsFlagSet(Building.Flags.Untouchable))
+                            DebugLog.LogToFileOnly("Error: crime < 0 in outside building, should be wrong");
+                            amountDelta = 0;
+                        }
+                        else
+                        {
+                            if (data.m_crimeBuffer + amountDelta * 100 <= 0)
                             {
-                                if (instance.m_buildings.m_buffer[i].Info.m_buildingAI is OutsideConnectionAI)
-                                {
-                                    if (instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.Road)
-                                    {
-                                        ProcessOutsideDemand((ushort)i, ref instance.m_buildings.m_buffer[i]);
-                                        AddOffers((ushort)i, ref instance.m_buildings.m_buffer[i]);
-                                    }
-                                }
+                                amountDelta = -data.m_crimeBuffer / 100;
                             }
                             else
                             {
-                                if ((instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.HealthCare) && (instance.m_buildings.m_buffer[i].Info.m_class.m_level == ItemClass.Level.Level2))
-                                {
-                                    haveCemetryBuildingTemp = true;
-                                }
-                                else if (instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.Garbage)
-                                {
-                                    haveGarbageBuildingTemp = true;
-                                }
-                                else if (instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.PoliceDepartment)
-                                {
-                                    havePoliceBuildingTemp = true;
-                                }
-                                else if ((instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.HealthCare) && (instance.m_buildings.m_buffer[i].Info.m_class.m_level == ItemClass.Level.Level1))
-                                {
-                                    haveHospitalBuildingTemp = true;
-                                }
-                                else if (instance.m_buildings.m_buffer[i].Info.m_class.m_service == ItemClass.Service.FireDepartment)
-                                {
-                                    haveFireBuildingTemp = true;
-                                }
+
                             }
+                            data.m_crimeBuffer = (ushort)(data.m_crimeBuffer + amountDelta * 100);
                         }
                     }
-
-                    if (num4 == 255)
+                }
+                else if (material == TransferManager.TransferReason.Sick)
+                {
+                    if (amountDelta < 0)
                     {
-                        haveCemetryBuilding = haveCemetryBuildingTemp;
-                        haveFireBuilding = haveFireBuildingTemp;
-                        havePoliceBuilding = havePoliceBuildingTemp;
-                        haveHospitalBuilding = haveHospitalBuildingTemp;
-                        haveGarbageBuilding = haveGarbageBuildingTemp;
-                        haveCemetryBuildingTemp = false;
-                        haveFireBuildingTemp = false;
-                        havePoliceBuildingTemp = false;
-                        haveHospitalBuildingTemp = false;
-                        haveGarbageBuildingTemp = false;
+                        if (data.m_customBuffer2 < 0)
+                        {
+                            DebugLog.LogToFileOnly("Error: sick < 0 in outside building, should be wrong");
+                            amountDelta = 0;
+                        }
+                        else
+                        {
+                            if (data.m_customBuffer2 + amountDelta * 100 <= 0)
+                            {
+                                amountDelta = -data.m_customBuffer2 / 100;
+                            }
+                            else
+                            {
+
+                            }
+                            data.m_customBuffer2 = (ushort)(data.m_customBuffer2 + amountDelta * 100);
+                        }
                     }
+                }
+                else if (material == TransferManager.TransferReason.Fire)
+                {
+                    if (data.m_electricityBuffer < 0)
+                    {
+                        DebugLog.LogToFileOnly("Error: fire < 0 in outside building, should be wrong");
+                        amountDelta = 0;
+                    }
+                    else
+                    {
+                        if (data.m_electricityBuffer + amountDelta * 100 <= 0)
+                        {
+                            amountDelta = -data.m_electricityBuffer / 100;
+                        }
+                        else
+                        {
+
+                        }
+                        data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + amountDelta * 100);
+                    }
+                }
+                else
+                {
+                }
+            }
+            else
+            {
+                if (material == TransferManager.TransferReason.GarbageMove)
+                {
+                    if (data.m_garbageBuffer < 0)
+                    {
+                        DebugLog.LogToFileOnly("Error: garbarge < 0 in outside building, should be wrong");
+                        amountDelta = 0;
+                    }
+                    else
+                    {
+                        if (data.m_garbageBuffer + amountDelta <= 0)
+                        {
+                            amountDelta = -data.m_garbageBuffer;
+                        }
+                        else
+                        {
+
+                        }
+                        data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + amountDelta);
+                    }
+                }
+                else if (material == TransferManager.TransferReason.DeadMove)
+                {
+                    if (data.m_customBuffer1 < 0)
+                    {
+                        DebugLog.LogToFileOnly("Error: dead < 0 in outside building, should be wrong");
+                        amountDelta = 0;
+                    }
+                    else
+                    {
+                        if (data.m_customBuffer1 + amountDelta <= 0)
+                        {
+                            amountDelta = -data.m_customBuffer1;
+                        }
+                        else
+                        {
+
+                        }
+                        data.m_customBuffer1 = (ushort)(data.m_customBuffer1 + amountDelta);
+                    }
+                }
+                else if (material == TransferManager.TransferReason.Garbage)
+                {
+                    amountDelta = 0;
+                }
+                else
+                {
+                    //do nothing
                 }
             }
         }
 
-        public void ProcessOutsideDemand(ushort buildingID, ref Building data)
+        public static void OutsideConnectionAISimulationStepPostFix(ushort buildingID, ref Building data)
+        {
+            if (data.Info.m_class.m_service == ItemClass.Service.Road)
+            {
+                ProcessOutsideDemand(buildingID, ref data);
+                AddOffers(buildingID, ref data);
+            }
+        }
+
+        public static void ProcessOutsideDemand(ushort buildingID, ref Building data)
         {
             //Gabarge
-            if (haveGarbageBuilding && (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside) && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.Garbage))
+            if (CustomPlayerBuildingAI.haveGarbageBuilding && (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside) && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.Garbage))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
@@ -184,7 +189,7 @@ namespace MoreOutsideInteraction
                 Singleton<TransferManager>.instance.RemoveOutgoingOffer(TransferManager.TransferReason.GarbageMove, offer);
             }
 
-            if (havePoliceBuilding && MoreOutsideInteraction.crimeToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.PoliceDepartment))
+            if (CustomPlayerBuildingAI.havePoliceBuilding && MoreOutsideInteraction.crimeToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.PoliceDepartment))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
@@ -199,7 +204,7 @@ namespace MoreOutsideInteraction
                 Singleton<TransferManager>.instance.RemoveOutgoingOffer(TransferManager.TransferReason.Crime, offer);
             }
             //sick
-            if (haveHospitalBuilding && MoreOutsideInteraction.sickToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.HealthCare))
+            if (CustomPlayerBuildingAI.haveHospitalBuilding && MoreOutsideInteraction.sickToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.HealthCare))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
@@ -214,7 +219,7 @@ namespace MoreOutsideInteraction
                 Singleton<TransferManager>.instance.RemoveOutgoingOffer(TransferManager.TransferReason.Sick, offer);
             }
             //fire
-            if (haveFireBuilding && MoreOutsideInteraction.fireToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.FireDepartment))
+            if (CustomPlayerBuildingAI.haveFireBuilding && MoreOutsideInteraction.fireToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.FireDepartment))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
@@ -231,7 +236,7 @@ namespace MoreOutsideInteraction
                 Singleton<TransferManager>.instance.RemoveOutgoingOffer(TransferManager.TransferReason.Fire, offer);
             }
             //deadbuffer
-            if (haveCemetryBuilding && MoreOutsideInteraction.deadFromOutside && Singleton<UnlockManager>.instance.Unlocked(UnlockManager.Feature.DeathCare))
+            if (CustomPlayerBuildingAI.haveCemetryBuilding && MoreOutsideInteraction.deadFromOutside && Singleton<UnlockManager>.instance.Unlocked(UnlockManager.Feature.DeathCare))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Outgoing)
                 {
@@ -275,11 +280,11 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddGarbageOffers(ushort buildingID, ref Building data)
+        public static void AddGarbageOffers(ushort buildingID, ref Building data)
         {
             TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
 
-            if (haveGarbageBuilding && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.Garbage) && (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside))
+            if (CustomPlayerBuildingAI.haveGarbageBuilding && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.Garbage) && (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
@@ -298,7 +303,7 @@ namespace MoreOutsideInteraction
                                     int num26 = 0;
                                     int num27 = 0;
                                     int num28 = 0;
-                                    this.CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Garbage, ref num25, ref num26, ref num27, ref num28);
+                                    CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Garbage, ref num25, ref num26, ref num27, ref num28);
                                     num24 -= num27 - num26;
                                     if (num24 >= 200)
                                     {
@@ -372,7 +377,7 @@ namespace MoreOutsideInteraction
             }
         }
 
-        private static int TickPathfindStatus(ref byte success, ref byte failure)
+        public static int TickPathfindStatus(ref byte success, ref byte failure)
         {
             int result = ((int)success << 8) / Mathf.Max(1, (int)(success + failure));
             if (success > failure)
@@ -388,7 +393,7 @@ namespace MoreOutsideInteraction
             return result;
         }
 
-        protected void CalculateGuestVehicles(ushort buildingID, ref Building data, TransferManager.TransferReason material, ref int count, ref int cargo, ref int capacity, ref int outside)
+        public static void CalculateGuestVehicles(ushort buildingID, ref Building data, TransferManager.TransferReason material, ref int count, ref int cargo, ref int capacity, ref int outside)
         {
             VehicleManager instance = Singleton<VehicleManager>.instance;
             ushort num = data.m_guestVehicles;
@@ -418,10 +423,10 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddDeadOffers(ushort buildingID, ref Building data)
+        public static void AddDeadOffers(ushort buildingID, ref Building data)
         {
             TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
-            if (haveCemetryBuilding && MoreOutsideInteraction.deadFromOutside && Singleton<UnlockManager>.instance.Unlocked(UnlockManager.Feature.DeathCare))
+            if (CustomPlayerBuildingAI.haveCemetryBuilding && MoreOutsideInteraction.deadFromOutside && Singleton<UnlockManager>.instance.Unlocked(UnlockManager.Feature.DeathCare))
             {
                 int car_valid_path = TickPathfindStatus(ref data.m_teens, ref data.m_serviceProblemTimer);
                 SimulationManager instance1 = Singleton<SimulationManager>.instance;
@@ -457,16 +462,16 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddPoliceOffers(ushort buildingID, ref Building data)
+        public static void AddPoliceOffers(ushort buildingID, ref Building data)
         {
             TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
-            if (havePoliceBuilding && MoreOutsideInteraction.crimeToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.PoliceDepartment))
+            if (CustomPlayerBuildingAI.havePoliceBuilding && MoreOutsideInteraction.crimeToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.PoliceDepartment))
             {
                 int num25 = 0;
                 int num26 = 0;
                 int num27 = 0;
                 int num28 = 0;
-                this.CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Crime, ref num25, ref num26, ref num27, ref num28);
+                CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Crime, ref num25, ref num26, ref num27, ref num28);
                 int car_valid_path = TickPathfindStatus(ref data.m_education3, ref data.m_adults);
                 SimulationManager instance1 = Singleton<SimulationManager>.instance;
                 if (car_valid_path + instance1.m_randomizer.Int32(256u) >> 8 == 0)
@@ -501,16 +506,16 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddFireOffers(ushort buildingID, ref Building data)
+        public static void AddFireOffers(ushort buildingID, ref Building data)
         {
             TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
-            if (haveFireBuilding && MoreOutsideInteraction.fireToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.FireDepartment))
+            if (CustomPlayerBuildingAI.haveFireBuilding && MoreOutsideInteraction.fireToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.FireDepartment))
             {
                 int num25 = 0;
                 int num26 = 0;
                 int num27 = 0;
                 int num28 = 0;
-                this.CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Fire, ref num25, ref num26, ref num27, ref num28);
+                CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Fire, ref num25, ref num26, ref num27, ref num28);
                 int car_valid_path = TickPathfindStatus(ref data.m_education3, ref data.m_adults);
                 SimulationManager instance1 = Singleton<SimulationManager>.instance;
                 if (car_valid_path + instance1.m_randomizer.Int32(256u) >> 8 == 0)
@@ -545,16 +550,16 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddSickOffers(ushort buildingID, ref Building data)
+        public static void AddSickOffers(ushort buildingID, ref Building data)
         {
             TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
-            if (haveHospitalBuilding && MoreOutsideInteraction.sickToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.HealthCare))
+            if (CustomPlayerBuildingAI.haveHospitalBuilding && MoreOutsideInteraction.sickToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.HealthCare))
             {
                 int num25 = 0;
                 int num26 = 0;
                 int num27 = 0;
                 int num28 = 0;
-                this.CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Sick, ref num25, ref num26, ref num27, ref num28);
+                CalculateGuestVehicles(buildingID, ref data, TransferManager.TransferReason.Sick, ref num25, ref num26, ref num27, ref num28);
                 int car_valid_path = TickPathfindStatus(ref data.m_education3, ref data.m_adults);
                 SimulationManager instance1 = Singleton<SimulationManager>.instance;
                 if (car_valid_path + instance1.m_randomizer.Int32(256u) >> 8 == 0)
@@ -589,7 +594,7 @@ namespace MoreOutsideInteraction
             }
         }
 
-        public void AddOffers(ushort buildingID, ref Building data)
+        public static void AddOffers(ushort buildingID, ref Building data)
         {
             //gabarge
             if (data.Info.m_class.m_service == ItemClass.Service.Road)
@@ -607,6 +612,5 @@ namespace MoreOutsideInteraction
                 }
             }
         }
-
     }
 }

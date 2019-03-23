@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MoreOutsideInteraction</RootNamespace>
     <AssemblyName>MoreOutsideInteraction</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +32,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -53,21 +57,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomAmbulanceAI.cs" />
-    <Compile Include="CustomFireTruckAI.cs" />
-    <Compile Include="CustomGarbageTruckAI.cs" />
-    <Compile Include="CustomHearseAI.cs" />
-    <Compile Include="CustomHumanAI.cs" />
-    <Compile Include="CustomOutsideConnectionAI.cs" />
-    <Compile Include="CustomPoliceCarAI.cs" />
-    <Compile Include="DebugLog.cs" />
-    <Compile Include="Language.cs" />
+    <Compile Include="CustomAI\CustomAmbulanceAI.cs" />
+    <Compile Include="CustomAI\CustomFireTruckAI.cs" />
+    <Compile Include="CustomAI\CustomGarbageTruckAI.cs" />
+    <Compile Include="CustomAI\CustomHearseAI.cs" />
+    <Compile Include="CustomAI\CustomHumanAI.cs" />
+    <Compile Include="CustomAI\CustomOutsideConnectionAI.cs" />
+    <Compile Include="CustomAI\CustomPlayerBuildingAI.cs" />
+    <Compile Include="CustomAI\CustomPoliceCarAI.cs" />
+    <Compile Include="Util\DebugLog.cs" />
+    <Compile Include="Util\HarmonyDetours.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="MoreOutsideInteraction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CustomTransferManager.cs" />
-    <Compile Include="RedirectionHelper.cs" />
-    <Compile Include="Threading.cs" />
+    <Compile Include="CustomManager\CustomTransferManager.cs" />
+    <Compile Include="Util\Localization.cs" />
+    <Compile Include="Util\RedirectionHelper.cs" />
+    <Compile Include="MoreOutsideInteractionThreading.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Locales\zh.txt" />
+    <Content Include="Locales\en.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
