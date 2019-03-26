@@ -92,7 +92,6 @@ namespace MoreOutsideInteraction
             {
                 DebugLog.LogToFileOnly("Init harmony detours");
                 HarmonyDetours.Apply();
-                HarmonyDetourInited = true;
             }
         }
 
@@ -102,7 +101,6 @@ namespace MoreOutsideInteraction
             {
                 DebugLog.LogToFileOnly("Revert harmony detours");
                 HarmonyDetours.DeApply();
-                HarmonyDetourInited = false;
             }
         }
 

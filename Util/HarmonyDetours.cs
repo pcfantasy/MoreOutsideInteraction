@@ -53,6 +53,7 @@ namespace MoreOutsideInteraction.Util
             harmony.ConditionalPatch(playerBuildingAISimulationStep,
                 null,
                 new HarmonyMethod(playerBuildingAISimulationStepPostFix));
+            Loader.HarmonyDetourInited = true;
             DebugLog.LogToFileOnly("Harmony patches applied");
         }
 
@@ -70,6 +71,7 @@ namespace MoreOutsideInteraction.Util
             harmony.ConditionalUnPatch(playerBuildingAISimulationStep,
                 null,
                 new HarmonyMethod(playerBuildingAISimulationStepPostFix));
+            Loader.HarmonyDetourInited = false;
             DebugLog.LogToFileOnly("Harmony patches DeApplied");
         }
     }

@@ -240,7 +240,7 @@ namespace MoreOutsideInteraction.CustomAI
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Outgoing)
                 {
-                    if (Singleton<SimulationManager>.instance.m_randomizer.Int32(64u) == 0)
+                    if (Singleton<SimulationManager>.instance.m_randomizer.Int32(16u) == 0)
                     {
                         data.m_customBuffer1 = (ushort)(data.m_customBuffer1 + 1);
                     }
