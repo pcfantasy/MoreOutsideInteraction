@@ -1,0 +1,7 @@
+﻿SELECT_TO_ENABLE	Select To Enable Outside Interaction
+DEAD_FROM_OUTSIDE	Dead From Outside
+GARBAGE_FROM_OUTSIDE	Garbage From Outside
+GARBAGE_TO_OUTSIDE	Garbage Sevices To Outside
+POLICE_TO_OUTSIDE	Police Sevices To Outside
+HOSPITAL_TO_OUTSIDE	First Aid Sevices To Outside
+FIRESTATION_TO_OUTSIDE	Fire Sevices Outside
