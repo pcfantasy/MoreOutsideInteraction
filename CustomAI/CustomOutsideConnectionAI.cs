@@ -308,7 +308,7 @@ namespace MoreOutsideInteraction.CustomAI
                                     if (num24 >= 200)
                                     {
                                         offer = default(TransferManager.TransferOffer);
-                                        offer.Priority = instance1.m_randomizer.Int32(3);
+                                        offer.Priority = 2;
                                         offer.Building = buildingID;
                                         offer.Position = data.m_position;
                                         offer.Amount = 1;
@@ -332,7 +332,7 @@ namespace MoreOutsideInteraction.CustomAI
                                 if (num24 >= 200)
                                 {
                                     offer = default(TransferManager.TransferOffer);
-                                    offer.Priority = instance1.m_randomizer.Int32(3);
+                                    offer.Priority = 2;
                                     offer.Building = buildingID;
                                     offer.Position = data.m_position;
                                     offer.Amount = 1;
@@ -354,7 +354,7 @@ namespace MoreOutsideInteraction.CustomAI
                             if (instance1.m_randomizer.Int32(16u) == 0)
                             {
                                 offer = default(TransferManager.TransferOffer);
-                                offer.Priority = instance1.m_randomizer.Int32(3);
+                                offer.Priority = 2;
                                 offer.Building = buildingID;
                                 offer.Position = data.m_position;
                                 offer.Amount = 1;
@@ -365,7 +365,7 @@ namespace MoreOutsideInteraction.CustomAI
                         else
                         {
                             offer = default(TransferManager.TransferOffer);
-                            offer.Priority = instance1.m_randomizer.Int32(3);
+                            offer.Priority = 2;
                             offer.Building = buildingID;
                             offer.Position = data.m_position;
                             offer.Amount = 1;
@@ -437,7 +437,7 @@ namespace MoreOutsideInteraction.CustomAI
                         if (data.m_customBuffer1 > 10)
                         {
                             offer = default(TransferManager.TransferOffer);
-                            offer.Priority = instance1.m_randomizer.Int32(3);
+                            offer.Priority = 2;
                             offer.Building = buildingID;
                             offer.Position = data.m_position;
                             offer.Amount = 1;
@@ -451,7 +451,7 @@ namespace MoreOutsideInteraction.CustomAI
                     if (data.m_customBuffer1 > 10)
                     {
                         offer = default(TransferManager.TransferOffer);
-                        offer.Priority = instance1.m_randomizer.Int32(3);
+                        offer.Priority = 2;
                         offer.Building = buildingID;
                         offer.Position = data.m_position;
                         offer.Amount = 1;
@@ -481,7 +481,7 @@ namespace MoreOutsideInteraction.CustomAI
                         if ((data.m_crimeBuffer - (num27 - num26) * 100) > 200)
                         {
                             offer = default(TransferManager.TransferOffer);
-                            offer.Priority = instance1.m_randomizer.Int32(3);
+                            offer.Priority = 2;
                             offer.Building = buildingID;
                             offer.Position = data.m_position;
                             offer.Amount = 1;
@@ -495,7 +495,7 @@ namespace MoreOutsideInteraction.CustomAI
                     if ((data.m_crimeBuffer - (num27 - num26) * 100) > 200)
                     {
                         offer = default(TransferManager.TransferOffer);
-                        offer.Priority = instance1.m_randomizer.Int32(3);
+                        offer.Priority = 2;
                         offer.Building = buildingID;
                         offer.Position = data.m_position;
                         offer.Amount = 1;
@@ -525,7 +525,7 @@ namespace MoreOutsideInteraction.CustomAI
                         if ((data.m_electricityBuffer - (num27 - num26) * 100) > 200)
                         {
                             offer = default(TransferManager.TransferOffer);
-                            offer.Priority = instance1.m_randomizer.Int32(3);
+                            offer.Priority = 2;
                             offer.Building = buildingID;
                             offer.Position = data.m_position;
                             offer.Amount = 1;
@@ -569,7 +569,7 @@ namespace MoreOutsideInteraction.CustomAI
                         if ((data.m_customBuffer2 - (num27 - num26) * 100) > 200)
                         {
                             offer = default(TransferManager.TransferOffer);
-                            offer.Priority = instance1.m_randomizer.Int32(3);
+                            offer.Priority = 2;
                             offer.Building = buildingID;
                             offer.Position = data.m_position;
                             offer.Amount = 1;

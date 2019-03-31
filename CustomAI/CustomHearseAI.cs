@@ -83,8 +83,8 @@ namespace MoreOutsideInteraction.CustomAI
                             double z = instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position.z - instance.m_buildings.m_buffer[(int)data.m_sourceBuilding].m_position.z;
                             x = (x > 0) ? x : -x;
                             z = (z > 0) ? z : -z;
-                            double distance = (x + z) / 2f;
-                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * (distance) * 2f), ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
+                            double distance = (x + z);
+                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * distance), ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
                         }
                     }
                 }

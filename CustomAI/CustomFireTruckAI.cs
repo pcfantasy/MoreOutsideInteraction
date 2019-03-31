@@ -32,7 +32,7 @@ namespace MoreOutsideInteraction.CustomAI
                         double z = instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position.z - instance.m_buildings.m_buffer[(int)data.m_sourceBuilding].m_position.z;
                         x = (x > 0) ? x : -x;
                         z = (z > 0) ? z : -z;
-                        double distance = (x + z) / 2f;
+                        double distance = (x + z);
                         Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance * 2f)), ItemClass.Service.FireDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
                     }
                     ushort num3 = instance.FindBuilding(instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position, 200f, info.m_class.m_service, ItemClass.SubService.None, Building.Flags.Outgoing, Building.Flags.Incoming);
