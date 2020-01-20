@@ -415,7 +415,7 @@ namespace MoreOutsideInteraction.CustomAI
                     }
                 }
                 num = instance.m_vehicles.m_buffer[(int)num].m_nextGuestVehicle;
-                if (++num2 > 16384)
+                if (++num2 > Singleton<VehicleManager>.instance.m_vehicles.m_size)
                 {
                     CODebugBase<LogChannel>.Error(LogChannel.Core, "Invalid list detected!\n" + Environment.StackTrace);
                     break;
