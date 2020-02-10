@@ -76,12 +76,16 @@
     <Compile Include="MoreOutsideInteractionThreading.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Locales\zh-cn.txt" />
     <Content Include="Locales\zh.txt" />
     <Content Include="Locales\en.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "D:\Mod\MoreOutsideInteraction\bin\Release\MoreOutsideInteraction.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"</PostBuildEvent>
+    <PostBuildEvent>copy "D:\Mod\MoreOutsideInteraction\bin\Release\MoreOutsideInteraction.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"
+rd /q /s "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"
+mkdir "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"
+copy "D:\Mod\MoreOutsideInteraction\Locales\*.*" "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
