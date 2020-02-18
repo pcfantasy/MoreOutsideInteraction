@@ -33,6 +33,7 @@ namespace MoreOutsideInteraction
         public static LoadMode CurrentLoadMode;
         public static bool DetourInited = false;
         public static bool HarmonyDetourInited = false;
+        public static bool HarmonyDetourFailed = true;
         public static bool isRealCityRunning = false;
 
         public override void OnCreated(ILoading loading)
@@ -137,102 +138,6 @@ namespace MoreOutsideInteraction
                 catch (Exception)
                 {
                     DebugLog.LogToFileOnly("Could not detour OutsideConnectionAI::ModifyMaterialBuffer");
-                    detourFailed = true;
-                }
-                //3
-                DebugLog.LogToFileOnly("Detour GarbageTruckAI::ArriveAtTarget calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(GarbageTruckAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null),
-                                           typeof(CustomGarbageTruckAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour GarbageTruckAI::ArriveAtTarget");
-                    detourFailed = true;
-                }
-                //4
-                DebugLog.LogToFileOnly("Detour AmbulanceAI::ArriveAtTarget calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(AmbulanceAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null),
-                                           typeof(CustomAmbulanceAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour AmbulanceAI::ArriveAtTarget");
-                    detourFailed = true;
-                }
-                //5
-                DebugLog.LogToFileOnly("Detour FireTruckAI::ArriveAtTarget calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(FireTruckAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null),
-                                           typeof(CustomFireTruckAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour FireTruckAI::ArriveAtTarget");
-                    detourFailed = true;
-                }
-                //6
-                DebugLog.LogToFileOnly("Detour PoliceCarAI::ArriveAtTarget calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(PoliceCarAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null),
-                                           typeof(CustomPoliceCarAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour PoliceCarAI::ArriveAtTarget");
-                    detourFailed = true;
-                }
-                //7
-                DebugLog.LogToFileOnly("Detour HearseAI::ArriveAtTarget calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(HearseAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null),
-                                           typeof(CustomHearseAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour HearseAI::ArriveAtTarget");
-                    detourFailed = true;
-                }
-                //8
-                DebugLog.LogToFileOnly("Detour AmbulanceAI::StartTransfer calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(AmbulanceAI).GetMethod("StartTransfer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(TransferManager.TransferOffer) }, null),
-                                           typeof(CustomAmbulanceAI).GetMethod("StartTransfer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(TransferManager.TransferOffer) }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour AmbulanceAI::StartTransfer");
-                    detourFailed = true;
-                }
-                //9
-                DebugLog.LogToFileOnly("Detour FireTruckAI::StartTransfer calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(FireTruckAI).GetMethod("StartTransfer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(TransferManager.TransferOffer) }, null),
-                                           typeof(CustomFireTruckAI).GetMethod("StartTransfer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(TransferManager.TransferOffer) }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour FireTruckAI::StartTransfer");
-                    detourFailed = true;
-                }
-                //10
-                DebugLog.LogToFileOnly("Detour HumanAI::GetBuildingTargetPosition calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(HumanAI).GetMethod("GetBuildingTargetPosition", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(CitizenInstance).MakeByRefType(), typeof(float) }, null),
-                                           typeof(CustomHumanAI).GetMethod("GetBuildingTargetPosition", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(CitizenInstance).MakeByRefType(), typeof(float) }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour HumanAI::GetBuildingTargetPosition");
                     detourFailed = true;
                 }
 

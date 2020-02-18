@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Globalization;
 using ColossalFramework.UI;
+using Harmony;
 using ICities;
 using MoreOutsideInteraction.CustomAI;
 using MoreOutsideInteraction.Util;
@@ -16,6 +17,7 @@ namespace MoreOutsideInteraction
     public class MoreOutsideInteractionThreading : ThreadingExtensionBase
     {
         public static bool isFirstTime = true;
+        public const int HarmonyPatchNum = 10;
 
         public override void OnBeforeSimulationFrame()
         {
@@ -68,6 +70,36 @@ namespace MoreOutsideInteraction
                     string error = "MoreOutsideInteraction HarmonyDetourInit is failed, Send MoreOutsideInteraction.txt to Author.";
                     DebugLog.LogToFileOnly(error);
                     UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", error, true);
+                }
+                else
+                {
+                    var harmony = HarmonyInstance.Create(HarmonyDetours.ID);
+                    var methods = harmony.GetPatchedMethods();
+                    int i = 0;
+                    foreach (var method in methods)
+                    {
+                        var info = harmony.GetPatchInfo(method);
+                        if (info.Owners?.Contains(harmony.Id) == true)
+                        {
+                            DebugLog.LogToFileOnly("Harmony patch method = " + method.Name.ToString());
+                            if (info.Prefixes.Count != 0)
+                            {
+                                DebugLog.LogToFileOnly("Harmony patch method has PreFix");
+                            }
+                            if (info.Postfixes.Count != 0)
+                            {
+                                DebugLog.LogToFileOnly("Harmony patch method has PostFix");
+                            }
+                            i++;
+                        }
+                    }
+
+                    if (i != HarmonyPatchNum)
+                    {
+                        string error = $"MoreOutsideInteraction HarmonyDetour Patch Num is {i}, Right Num is {HarmonyPatchNum} Send MoreOutsideInteraction.txt to Author.";
+                        DebugLog.LogToFileOnly(error);
+                        UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", error, true);
+                    }
                 }
             }
         }
