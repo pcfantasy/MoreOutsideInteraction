@@ -59,6 +59,12 @@
   <ItemGroup>
     <Compile Include="CustomAI\CustomOutsideConnectionAI.cs" />
     <Compile Include="CustomAI\CustomPlayerBuildingAI.cs" />
+    <Compile Include="Patch\OutsideConnectionAIModifyMaterialBufferPatch.cs" />
+    <Compile Include="Patch\PoliceCarAIShouldReturnToSourcePatch.cs" />
+    <Compile Include="Patch\GarbageTruckAIShouldReturnToSourcePatch.cs" />
+    <Compile Include="Patch\FireTruckAIShouldReturnToSourcePatch.cs" />
+    <Compile Include="Patch\AmbulanceAIShouldReturnToSourcePatch.cs" />
+    <Compile Include="Patch\VehicleManagerReleaseVehicleImplementationPatch.cs" />
     <Compile Include="Patch\HumanAIGetBuildingTargetPositionPatch.cs" />
     <Compile Include="Patch\PoliceCarAIArriveAtTargetPatch.cs" />
     <Compile Include="Patch\HearseAIArriveAtTargetPatch.cs" />

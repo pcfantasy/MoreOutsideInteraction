@@ -18,5 +18,6 @@ namespace MoreOutsideInteraction.CustomAI
         public static bool haveCemetryBuildingTemp = true;
         public static bool haveHospitalBuildingTemp = true;
         public static bool havePoliceBuildingTemp = true;
+        public static bool[] canReturn = new bool[65536];
     }
 }

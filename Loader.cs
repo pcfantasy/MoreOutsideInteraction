@@ -52,6 +52,10 @@ namespace MoreOutsideInteraction
                 {
                     DebugLog.LogToFileOnly("OnLevelLoaded");
                     InitDetour();
+                    for (int i = 0; i < 65536; i ++)
+                    {
+                        CustomPlayerBuildingAI.canReturn[i] = false;
+                    }
                     HarmonyInitDetour();
                     MoreOutsideInteraction.LoadSetting();
                     if (mode == LoadMode.NewGame)
@@ -93,6 +97,7 @@ namespace MoreOutsideInteraction
             {
                 DebugLog.LogToFileOnly("Init harmony detours");
                 HarmonyDetours.Apply();
+                HarmonyDetourInited = true;
             }
         }
 
@@ -102,6 +107,8 @@ namespace MoreOutsideInteraction
             {
                 DebugLog.LogToFileOnly("Revert harmony detours");
                 HarmonyDetours.DeApply();
+                HarmonyDetourInited = false;
+                HarmonyDetourFailed = true;
             }
         }
 
@@ -127,18 +134,6 @@ namespace MoreOutsideInteraction
                         DebugLog.LogToFileOnly("Could not detour TransferManager::StartTransfer");
                         detourFailed = true;
                     }
-                }
-                //2
-                DebugLog.LogToFileOnly("Detour OutsideConnectionAI::ModifyMaterialBuffer calls");
-                try
-                {
-                    Detours.Add(new Detour(typeof(OutsideConnectionAI).GetMethod("ModifyMaterialBuffer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Building).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(int).MakeByRefType() }, null),
-                                           typeof(CustomOutsideConnectionAI).GetMethod("ModifyMaterialBuffer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Building).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(int).MakeByRefType() }, null)));
-                }
-                catch (Exception)
-                {
-                    DebugLog.LogToFileOnly("Could not detour OutsideConnectionAI::ModifyMaterialBuffer");
-                    detourFailed = true;
                 }
 
                 if (detourFailed)

@@ -17,7 +17,7 @@ namespace MoreOutsideInteraction
     public class MoreOutsideInteractionThreading : ThreadingExtensionBase
     {
         public static bool isFirstTime = true;
-        public const int HarmonyPatchNum = 10;
+        public const int HarmonyPatchNum = 16;
 
         public override void OnBeforeSimulationFrame()
         {
