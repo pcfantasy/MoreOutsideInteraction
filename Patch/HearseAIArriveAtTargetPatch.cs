@@ -35,7 +35,7 @@ namespace MoreOutsideInteraction.Patch
                 BuildingManager instance = Singleton<BuildingManager>.instance;
                 BuildingInfo info = instance.m_buildings.m_buffer[(int)data.m_targetBuilding].Info;
                 info.m_buildingAI.ModifyMaterialBuffer(data.m_targetBuilding, ref instance.m_buildings.m_buffer[(int)data.m_targetBuilding], (TransferManager.TransferReason)data.m_transferType, ref num);
-                ProcessDeadmoveIncomeArriveAtTarget(vehicleID, ref data, num);
+                ProcessDeadmoveIncomeArriveAtTarget(ref data, num);
                 if ((data.m_flags & Vehicle.Flags.TransferToTarget) != (Vehicle.Flags)0)
                 {
                     data.m_transferSize = (ushort)Mathf.Clamp((int)data.m_transferSize - num, 0, (int)data.m_transferSize);
@@ -55,18 +55,17 @@ namespace MoreOutsideInteraction.Patch
                         instance.m_buildings.m_buffer[(int)data.m_sourceBuilding].AddOwnVehicle(vehicleID, ref data);
                     }
                 }
+                __instance.SetTarget(vehicleID, ref data, 0);
                 __result = false;
                 return false;
             }
             return true;
         }
 
-        public static void ProcessDeadmoveIncomeArriveAtTarget(ushort vehicleID, ref Vehicle data, int num)
+        public static void ProcessDeadmoveIncomeArriveAtTarget(ref Vehicle data, int num)
         {
             BuildingManager instance = Singleton<BuildingManager>.instance;
             Building building = instance.m_buildings.m_buffer[(int)data.m_sourceBuilding];
-            Building building1 = instance.m_buildings.m_buffer[(int)data.m_targetBuilding];
-            BuildingInfo info = instance.m_buildings.m_buffer[(int)data.m_targetBuilding].Info;
             if ((data.m_flags & Vehicle.Flags.TransferToTarget) != (Vehicle.Flags)0)
             {
                 if (building.m_flags.IsFlagSet(Building.Flags.Untouchable))
