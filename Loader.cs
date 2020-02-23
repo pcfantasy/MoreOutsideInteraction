@@ -15,21 +15,6 @@ namespace MoreOutsideInteraction
 {
     public class Loader : LoadingExtensionBase
     {
-        public class Detour
-        {
-            public MethodInfo OriginalMethod;
-            public MethodInfo CustomMethod;
-            public RedirectCallsState Redirect;
-
-            public Detour(MethodInfo originalMethod, MethodInfo customMethod)
-            {
-                this.OriginalMethod = originalMethod;
-                this.CustomMethod = customMethod;
-                this.Redirect = RedirectionHelper.RedirectCalls(originalMethod, customMethod);
-            }
-        }
-
-        public static List<Detour> Detours { get; set; }
         public static LoadMode CurrentLoadMode;
         public static bool DetourInited = false;
         public static bool HarmonyDetourInited = false;
@@ -38,7 +23,6 @@ namespace MoreOutsideInteraction
 
         public override void OnCreated(ILoading loading)
         {
-            Detours = new List<Detour>();
             base.OnCreated(loading);
         }
 
@@ -88,7 +72,7 @@ namespace MoreOutsideInteraction
 
         private bool CheckRealCityIsLoaded()
         {
-            return this.Check3rdPartyModLoaded("RealCity", true);
+            return this.Check3rdPartyModLoaded("RealCity", false);
         }
 
         public void HarmonyInitDetour()
@@ -115,54 +99,12 @@ namespace MoreOutsideInteraction
         public void InitDetour()
         {
             isRealCityRunning = CheckRealCityIsLoaded();
-            if (!DetourInited)
-            {
-                DebugLog.LogToFileOnly("Init detours");
-                bool detourFailed = false;
-
-                //1
-                if (!isRealCityRunning)
-                {
-                    DebugLog.LogToFileOnly("Detour TransferManager::StartTransfer calls");
-                    try
-                    {
-                        Detours.Add(new Detour(typeof(TransferManager).GetMethod("StartTransfer", BindingFlags.NonPublic | BindingFlags.Instance),
-                                               typeof(CustomTransferManager).GetMethod("StartTransfer", BindingFlags.NonPublic | BindingFlags.Instance)));
-                    }
-                    catch (Exception)
-                    {
-                        DebugLog.LogToFileOnly("Could not detour TransferManager::StartTransfer");
-                        detourFailed = true;
-                    }
-                }
-
-                if (detourFailed)
-                {
-                    DebugLog.LogToFileOnly("Detours failed");
-                }
-                else
-                {
-                    DebugLog.LogToFileOnly("Detours successful");
-                }
-
-                DetourInited = true;
-            }
+            DetourInited = true;
         }
 
         public void RevertDetour()
         {
-            if (DetourInited)
-            {
-                DebugLog.LogToFileOnly("Revert detours");
-                Detours.Reverse();
-                foreach (Detour d in Detours)
-                {
-                    RedirectionHelper.RevertRedirect(d.OriginalMethod, d.Redirect);
-                }
-                DetourInited = false;
-                Detours.Clear();
-                DebugLog.LogToFileOnly("Reverting detours finished.");
-            }
+            DetourInited = false;
         }
 
         private bool Check3rdPartyModLoaded(string namespaceStr, bool printAll = false)

@@ -11,7 +11,7 @@ namespace MoreOutsideInteraction
     public class MoreOutsideInteractionThreading : ThreadingExtensionBase
     {
         public static bool isFirstTime = true;
-        public const int HarmonyPatchNum = 16;
+        public const int HarmonyPatchNum = 17;
 
         public override void OnBeforeSimulationFrame()
         {
@@ -31,33 +31,6 @@ namespace MoreOutsideInteraction
             {
                 isFirstTime = false;
                 DebugLog.LogToFileOnly("ThreadingExtension.OnBeforeSimulationFrame: First frame detected. Checking detours.");
-                List<string> list = new List<string>();
-                foreach (Loader.Detour current in Loader.Detours)
-                {
-                    if (!RedirectionHelper.IsRedirected(current.OriginalMethod, current.CustomMethod))
-                    {
-                        list.Add(string.Format("{0}.{1} with {2} parameters ({3})", new object[]
-                        {
-                    current.OriginalMethod.DeclaringType.Name,
-                    current.OriginalMethod.Name,
-                    current.OriginalMethod.GetParameters().Length,
-                    current.OriginalMethod.DeclaringType.AssemblyQualifiedName
-                        }));
-                    }
-                }
-                DebugLog.LogToFileOnly(string.Format("ThreadingExtension.OnBeforeSimulationFrame: First frame detected. Detours checked. Result: {0} missing detours", list.Count));
-                if (list.Count > 0)
-                {
-                    string error = "MoreOutsideInteraction detected an incompatibility with another mod! You can continue playing but it's NOT recommended. MoreOutsideInteraction will not work as expected. See MoreOutsideInteraction.txt for technical details.";
-                    DebugLog.LogToFileOnly(error);
-                    string text = "The following methods were overriden by another mod:";
-                    foreach (string current2 in list)
-                    {
-                        text += string.Format("\n\t{0}", current2);
-                    }
-                    DebugLog.LogToFileOnly(text);
-                    UIView.library.ShowModal<ExceptionPanel>("ExceptionPanel").SetMessage("Incompatibility Issue", text, true);
-                }
 
                 if (!Loader.HarmonyDetourInited)
                 {
@@ -98,7 +71,6 @@ namespace MoreOutsideInteraction
             }
         }
 
-        //TODO, use harmony to add this function to outsideconnectionAI.
         public override void OnAfterSimulationFrame()
         {
             base.OnAfterSimulationFrame();
