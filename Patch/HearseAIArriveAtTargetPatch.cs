@@ -80,7 +80,7 @@ namespace MoreOutsideInteraction.Patch
                             x = (x > 0) ? x : -x;
                             z = (z > 0) ? z : -z;
                             double distance = (x + z);
-                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * distance), ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
+                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * distance), ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
                         }
                     }
                 }
