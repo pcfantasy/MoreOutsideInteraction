@@ -1,13 +1,5 @@
-﻿using System;
-using ColossalFramework;
-using ColossalFramework.UI;
-using ICities;
-using System.Reflection;
+﻿using ICities;
 using System.IO;
-using System.Linq;
-using ColossalFramework.Math;
-using UnityEngine;
-using ColossalFramework.Globalization;
 using MoreOutsideInteraction.Util;
 
 namespace MoreOutsideInteraction

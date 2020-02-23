@@ -3,10 +3,7 @@ using ColossalFramework.Math;
 using Harmony;
 using MoreOutsideInteraction.CustomAI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace MoreOutsideInteraction.Patch
@@ -41,7 +38,7 @@ namespace MoreOutsideInteraction.Patch
                         x = (x > 0) ? x : -x;
                         z = (z > 0) ? z : -z;
                         double distance = (x + z);
-                        Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance * 2f)), ItemClass.Service.FireDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
+                        Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * distance * 1.5f), ItemClass.Service.FireDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
                         CustomPlayerBuildingAI.canReturn[vehicleID] = true;
                     }
                     ushort num3 = instance.FindBuilding(instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position, 200f, info.m_class.m_service, ItemClass.SubService.None, Building.Flags.Outgoing, Building.Flags.Incoming);

@@ -1,12 +1,4 @@
-﻿using ColossalFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-
-namespace MoreOutsideInteraction.CustomAI
+﻿namespace MoreOutsideInteraction.CustomAI
 {
     public class CustomOutsideConnectionAI : BuildingAI
     {

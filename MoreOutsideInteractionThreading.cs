@@ -1,16 +1,10 @@
 ﻿using ColossalFramework;
-using ColossalFramework.Globalization;
 using ColossalFramework.UI;
 using Harmony;
 using ICities;
 using MoreOutsideInteraction.CustomAI;
 using MoreOutsideInteraction.Util;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 
 namespace MoreOutsideInteraction
 {
