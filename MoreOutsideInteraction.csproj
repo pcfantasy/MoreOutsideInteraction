@@ -55,7 +55,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomAI\CustomOutsideConnectionAI.cs" />
     <Compile Include="CustomAI\CustomPlayerBuildingAI.cs" />
     <Compile Include="Patch\TransferManagerStartTransferPatch.cs" />
     <Compile Include="Patch\OutsideConnectionAIModifyMaterialBufferPatch.cs" />
