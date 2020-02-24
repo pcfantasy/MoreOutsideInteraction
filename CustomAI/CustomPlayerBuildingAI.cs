@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoreOutsideInteraction.CustomAI
+﻿namespace MoreOutsideInteraction.CustomAI
 {
     public class CustomPlayerBuildingAI
     {
@@ -18,28 +12,6 @@ namespace MoreOutsideInteraction.CustomAI
         public static bool haveCemetryBuildingTemp = true;
         public static bool haveHospitalBuildingTemp = true;
         public static bool havePoliceBuildingTemp = true;
-        public static void PlayerBuildingAISimulationStepPostFix(ushort buildingID, ref Building buildingData, ref Building.Frame frameData)
-        {
-            if ((buildingData.Info.m_class.m_service == ItemClass.Service.HealthCare) && (buildingData.Info.m_class.m_level == ItemClass.Level.Level2))
-            {
-                haveCemetryBuildingTemp = true;
-            }
-            else if (buildingData.Info.m_class.m_service == ItemClass.Service.Garbage)
-            {
-                haveGarbageBuildingTemp = true;
-            }
-            else if (buildingData.Info.m_class.m_service == ItemClass.Service.PoliceDepartment)
-            {
-                havePoliceBuildingTemp = true;
-            }
-            else if ((buildingData.Info.m_class.m_service == ItemClass.Service.HealthCare) && (buildingData.Info.m_class.m_level == ItemClass.Level.Level1))
-            {
-                haveHospitalBuildingTemp = true;
-            }
-            else if (buildingData.Info.m_class.m_service == ItemClass.Service.FireDepartment)
-            {
-                haveFireBuildingTemp = true;
-            }
-        }
+        public static bool[] canReturn = new bool[65536];
     }
 }

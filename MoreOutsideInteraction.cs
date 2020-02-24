@@ -1,13 +1,5 @@
-﻿using System;
-using ColossalFramework;
-using ColossalFramework.UI;
-using ICities;
-using System.Reflection;
+﻿using ICities;
 using System.IO;
-using System.Linq;
-using ColossalFramework.Math;
-using UnityEngine;
-using ColossalFramework.Globalization;
 using MoreOutsideInteraction.Util;
 
 namespace MoreOutsideInteraction
@@ -71,68 +63,68 @@ namespace MoreOutsideInteraction
                 StreamReader sr = new StreamReader(fs);
                 string strLine = sr.ReadLine();
 
-                if (strLine == "False")
-                {
-                    deadFromOutside = false;
-                }
-                else
+                if (strLine == "True")
                 {
                     deadFromOutside = true;
                 }
+                else
+                {
+                    deadFromOutside = false;
+                }
 
                 strLine = sr.ReadLine();
 
-                if (strLine == "False")
-                {
-                    garbageFromOutside = false;
-                }
-                else
+                if (strLine == "True")
                 {
                     garbageFromOutside = true;
                 }
+                else
+                {
+                    garbageFromOutside = false;
+                }
 
                 strLine = sr.ReadLine();
 
-                if (strLine == "False")
-                {
-                    garbageToOutside = false;
-                }
-                else
+                if (strLine == "True")
                 {
                     garbageToOutside = true;
                 }
+                else
+                {
+                    garbageToOutside = false;
+                }
 
                 strLine = sr.ReadLine();
 
-                if (strLine == "False")
-                {
-                    crimeToOutside = false;
-                }
-                else
+                if (strLine == "True")
                 {
                     crimeToOutside = true;
                 }
+                else
+                {
+                    crimeToOutside = false;
+                }
 
                 strLine = sr.ReadLine();
 
-                if (strLine == "False")
-                {
-                    sickToOutside = false;
-                }
-                else
+                if (strLine == "True")
                 {
                     sickToOutside = true;
                 }
+                else
+                {
+                    sickToOutside = false;
+                }
 
                 strLine = sr.ReadLine();
 
-                if (strLine == "False")
+                if (strLine == "True")
                 {
-                    fireToOutside = false;
+                    fireToOutside = true;
                 }
                 else
                 {
-                    fireToOutside = true;
+                    fireToOutside = false;
                 }
 
                 sr.Close();

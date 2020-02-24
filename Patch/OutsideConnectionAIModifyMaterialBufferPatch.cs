@@ -1,8 +1,17 @@
-﻿namespace MoreOutsideInteraction.CustomAI
+﻿using Harmony;
+using System;
+using System.Reflection;
+
+namespace MoreOutsideInteraction.Patch
 {
-    public class CustomOutsideConnectionAI : BuildingAI
+    [HarmonyPatch]
+    public static class OutsideConnectionAIModifyMaterialBufferPatch
     {
-        public override void ModifyMaterialBuffer(ushort buildingID, ref Building data, TransferManager.TransferReason material, ref int amountDelta)
+        public static MethodBase TargetMethod()
+        {
+            return typeof(OutsideConnectionAI).GetMethod("ModifyMaterialBuffer", BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Building).MakeByRefType(), typeof(TransferManager.TransferReason), typeof(int).MakeByRefType() }, null);
+        }
+        public static bool Prefix(ref Building data, TransferManager.TransferReason material, ref int amountDelta)
         {
             if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
             {
@@ -41,10 +50,6 @@
                             {
                                 amountDelta = -data.m_crimeBuffer / 100;
                             }
-                            else
-                            {
-
-                            }
                             data.m_crimeBuffer = (ushort)(data.m_crimeBuffer + amountDelta * 100);
                         }
                     }
@@ -64,10 +69,6 @@
                             {
                                 amountDelta = -data.m_customBuffer2 / 100;
                             }
-                            else
-                            {
-
-                            }
                             data.m_customBuffer2 = (ushort)(data.m_customBuffer2 + amountDelta * 100);
                         }
                     }
@@ -84,10 +85,6 @@
                         if (data.m_electricityBuffer + amountDelta * 100 <= 0)
                         {
                             amountDelta = -data.m_electricityBuffer / 100;
-                        }
-                        else
-                        {
-
                         }
                         data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + amountDelta * 100);
                     }
@@ -110,10 +107,6 @@
                         if (data.m_garbageBuffer + amountDelta <= 0)
                         {
                             amountDelta = -data.m_garbageBuffer;
-                        }
-                        else
-                        {
-
                         }
                         data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + amountDelta);
                     }
@@ -142,11 +135,8 @@
                 {
                     amountDelta = 0;
                 }
-                else
-                {
-                    //do nothing
-                }
             }
-        }       
+            return false;
+        }
     }
 }

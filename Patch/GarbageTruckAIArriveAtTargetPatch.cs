@@ -1,21 +1,26 @@
 ﻿using ColossalFramework;
 using ColossalFramework.Math;
+using Harmony;
+using MoreOutsideInteraction.CustomAI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using UnityEngine;
 
-namespace MoreOutsideInteraction.CustomAI
+namespace MoreOutsideInteraction.Patch
 {
-    public class CustomGarbageTruckAI : GarbageTruckAI
+    [HarmonyPatch]
+    public static class GarbageTruckAIArriveAtTargetPatch
     {
-        private bool ArriveAtTarget(ushort vehicleID, ref Vehicle data)
+        public static MethodBase TargetMethod()
+        {
+            return typeof(GarbageTruckAI).GetMethod("ArriveAtTarget", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(ushort), typeof(Vehicle).MakeByRefType()}, null);
+        }
+        public static bool Prefix(ref GarbageTruckAI __instance, ushort vehicleID, ref Vehicle data, ref bool __result)
         {
             if (data.m_targetBuilding == 0)
             {
-                return true;
+                __result = true;
+                return false;
             }
             int num = 0;
             if ((data.m_flags & Vehicle.Flags.TransferToTarget) != (Vehicle.Flags)0)
@@ -24,7 +29,7 @@ namespace MoreOutsideInteraction.CustomAI
             }
             if ((data.m_flags & Vehicle.Flags.TransferToSource) != (Vehicle.Flags)0)
             {
-                num = Mathf.Min(0, (int)data.m_transferSize - this.m_cargoCapacity);
+                num = Mathf.Min(0, (int)data.m_transferSize - __instance.m_cargoCapacity);
             }
             BuildingManager instance = Singleton<BuildingManager>.instance;
             BuildingInfo info = instance.m_buildings.m_buffer[(int)data.m_targetBuilding].Info;
@@ -63,7 +68,8 @@ namespace MoreOutsideInteraction.CustomAI
                     x = (x > 0) ? x : -x;
                     z = (z > 0) ? z : -z;
                     double distance = (x + z);
-                    Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
+                    Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                    CustomPlayerBuildingAI.canReturn[vehicleID] = true;
                 }
                 ushort num3 = instance.FindBuilding(instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position, 200f, info.m_class.m_service, ItemClass.SubService.None, Building.Flags.Outgoing, Building.Flags.Incoming);
                 if (num3 != 0)
@@ -72,7 +78,7 @@ namespace MoreOutsideInteraction.CustomAI
                     Randomizer randomizer = new Randomizer((int)vehicleID);
                     Vector3 vector;
                     Vector3 vector2;
-                    info3.m_buildingAI.CalculateSpawnPosition(num3, ref instance.m_buildings.m_buffer[(int)num3], ref randomizer, this.m_info, out vector, out vector2);
+                    info3.m_buildingAI.CalculateSpawnPosition(num3, ref instance.m_buildings.m_buffer[(int)num3], ref randomizer, __instance.m_info, out vector, out vector2);
                     Quaternion rotation = Quaternion.identity;
                     Vector3 forward = vector2 - vector;
                     if (forward.sqrMagnitude > 0.01f)
@@ -89,17 +95,19 @@ namespace MoreOutsideInteraction.CustomAI
                     data.m_targetPos1.w = 2f;
                     data.m_targetPos2 = data.m_targetPos1;
                     data.m_targetPos3 = data.m_targetPos1;
-                    this.FrameDataUpdated(vehicleID, ref data, ref data.m_frame0);
-                    this.SetTarget(vehicleID, ref data, 0);
+                    __instance.FrameDataUpdated(vehicleID, ref data, ref data.m_frame0);
+                    __instance.SetTarget(vehicleID, ref data, 0);
+                    __result = false;
                     return false;
                 }
             }
             /// NON-STOCK CODE END ///
-            this.SetTarget(vehicleID, ref data, 0);
+            __instance.SetTarget(vehicleID, ref data, 0);
+            __result = false;
             return false;
         }
 
-        private void ProcessGarbageIncomeArriveAtTarget(ushort vehicleID, ref Vehicle data, int num)
+        public static void ProcessGarbageIncomeArriveAtTarget(ushort vehicleID, ref Vehicle data, int num)
         {
             BuildingManager instance = Singleton<BuildingManager>.instance;
             Building building = instance.m_buildings.m_buffer[(int)data.m_sourceBuilding];
@@ -120,7 +128,7 @@ namespace MoreOutsideInteraction.CustomAI
                             x = (x > 0) ? x : -x;
                             z = (z > 0) ? z : -z;
                             double distance = (x + z);
-                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115);
+                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
                         }
                     }
                 }
@@ -128,4 +136,3 @@ namespace MoreOutsideInteraction.CustomAI
         }
     }
 }
-
