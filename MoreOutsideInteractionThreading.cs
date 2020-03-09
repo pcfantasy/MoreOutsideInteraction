@@ -40,12 +40,12 @@ namespace MoreOutsideInteraction
                 }
                 else
                 {
-                    var harmony = HarmonyInstance.Create(HarmonyDetours.ID);
+                    var harmony = new Harmony.Harmony(HarmonyDetours.ID);
                     var methods = harmony.GetPatchedMethods();
                     int i = 0;
                     foreach (var method in methods)
                     {
-                        var info = harmony.GetPatchInfo(method);
+                        var info = Harmony.Harmony.GetPatchInfo(method);
                         if (info.Owners?.Contains(harmony.Id) == true)
                         {
                             DebugLog.LogToFileOnly("Harmony patch method = " + method.Name.ToString());
