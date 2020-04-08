@@ -32,8 +32,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony1.9">
-      <HintPath>..\0Harmony1.9.dll</HintPath>
+    <Reference Include="0Harmony">
+      <HintPath>..\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>F:\SteamLibrary\steamapps\common\Cities_Skylines\Cities_Data\Managed\Assembly-CSharp.dll</HintPath>
@@ -97,7 +97,7 @@ rd /q /s "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"
 mkdir "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"
 copy "D:\Mod\MoreOutsideInteraction\Locales\*.*" "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944"\Locales"
 copy "D:\Mod\MoreOutsideInteraction\PreviewImage.png"  "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944\PreviewImage.png"
-copy "D:\Mod\MoreOutsideInteraction\bin\Release\0Harmony1.9.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944\0Harmony.dll"</PostBuildEvent>
+copy "D:\Mod\MoreOutsideInteraction\bin\Release\0Harmony.dll"  "F:\SteamLibrary\steamapps\workshop\content\255710\1706703944\0Harmony.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
