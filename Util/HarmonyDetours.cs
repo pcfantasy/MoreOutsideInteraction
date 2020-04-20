@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 
 namespace MoreOutsideInteraction.Util
 {
@@ -7,7 +7,7 @@ namespace MoreOutsideInteraction.Util
         public const string ID = "pcfantasy.moreoutsideinteraction";
         public static void Apply()
         {
-            var harmony = HarmonyInstance.Create(ID);
+            var harmony = new Harmony(ID);
             harmony.PatchAll(typeof(HarmonyDetours).Assembly);
             Loader.HarmonyDetourFailed = false;
             DebugLog.LogToFileOnly("Harmony patches applied");
@@ -15,7 +15,7 @@ namespace MoreOutsideInteraction.Util
 
         public static void DeApply()
         {
-            var harmony = HarmonyInstance.Create(ID);
+            var harmony = new Harmony(ID);
             harmony.UnpatchAll(ID);
             DebugLog.LogToFileOnly("Harmony patches DeApplied");
         }

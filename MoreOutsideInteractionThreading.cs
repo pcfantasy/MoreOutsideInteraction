@@ -1,10 +1,9 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
-using Harmony;
+using HarmonyLib;
 using ICities;
 using MoreOutsideInteraction.CustomAI;
 using MoreOutsideInteraction.Util;
-using System.Collections.Generic;
 
 namespace MoreOutsideInteraction
 {
@@ -40,12 +39,12 @@ namespace MoreOutsideInteraction
                 }
                 else
                 {
-                    var harmony = HarmonyInstance.Create(HarmonyDetours.ID);
+                    var harmony = new Harmony(HarmonyDetours.ID);
                     var methods = harmony.GetPatchedMethods();
                     int i = 0;
                     foreach (var method in methods)
                     {
-                        var info = harmony.GetPatchInfo(method);
+                        var info = Harmony.GetPatchInfo(method);
                         if (info.Owners?.Contains(harmony.Id) == true)
                         {
                             DebugLog.LogToFileOnly($"Harmony patch method = {method.FullDescription()}");

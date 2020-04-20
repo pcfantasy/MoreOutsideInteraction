@@ -1,6 +1,7 @@
 ﻿using ICities;
 using System.IO;
 using MoreOutsideInteraction.Util;
+using CitiesHarmony.API;
 
 namespace MoreOutsideInteraction
 {
@@ -33,6 +34,7 @@ namespace MoreOutsideInteraction
             fs.Close();
             LoadSetting();
             SaveSetting();
+            HarmonyHelper.EnsureHarmonyInstalled();
         }
 
         public void OnDisabled()

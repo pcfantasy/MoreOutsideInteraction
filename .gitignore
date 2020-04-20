@@ -9,3 +9,5 @@
 obj/Release/MoreOutsideInteraction.csproj.CopyComplete
 .vs/MoreOutsideInteraction/v16/Server/sqlite3/storage.ide-shm
 .vs/MoreOutsideInteraction/v16/Server/sqlite3/storage.ide-wal
+
+packages/*
