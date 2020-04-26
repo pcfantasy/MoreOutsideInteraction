@@ -29,7 +29,7 @@ namespace MoreOutsideInteraction.Patch
                 BuildingInfo info = Singleton<BuildingManager>.instance.m_buildings.m_buffer[(int)data.m_targetBuilding].Info;
                 info.m_buildingAI.ModifyMaterialBuffer(data.m_targetBuilding, ref Singleton<BuildingManager>.instance.m_buildings.m_buffer[(int)data.m_targetBuilding], (TransferManager.TransferReason)data.m_transferType, ref num);
                 var instance = Singleton<BuildingManager>.instance;
-                if ((instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
+                if (instance.m_buildings.m_buffer[(int)data.m_targetBuilding].Info.m_buildingAI is OutsideConnectionAI)
                 {
                     if (Loader.isRealCityRunning)
                     {
@@ -41,6 +41,10 @@ namespace MoreOutsideInteraction.Patch
                         Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * distance * 1.5f), ItemClass.Service.FireDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
                         CustomPlayerBuildingAI.canReturn[vehicleID] = true;
                     }
+                }
+
+                if ((instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
+                {
                     ushort num3 = instance.FindBuilding(instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position, 200f, info.m_class.m_service, ItemClass.SubService.None, Building.Flags.Outgoing, Building.Flags.Incoming);
                     if (num3 != 0)
                     {

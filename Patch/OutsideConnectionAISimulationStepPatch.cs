@@ -32,6 +32,10 @@ namespace MoreOutsideInteraction.Patch
                 {
                     data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 40);
                 }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
+                {
+                    data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 60);
+                }
                 else
                 {
                     data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 20);
@@ -52,6 +56,10 @@ namespace MoreOutsideInteraction.Patch
                 {
                     data.m_crimeBuffer = (ushort)(data.m_crimeBuffer + 1);
                 }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
+                {
+                    data.m_crimeBuffer = (ushort)(data.m_crimeBuffer + 1);
+                }
             }
             else if (data.m_crimeBuffer != 0)
             {
@@ -64,6 +72,10 @@ namespace MoreOutsideInteraction.Patch
             if (CustomPlayerBuildingAI.haveHospitalBuilding && MoreOutsideInteraction.sickToOutside && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.HealthCare))
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
+                {
+                    data.m_customBuffer2 = (ushort)(data.m_customBuffer2 + 1);
+                }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
                 {
                     data.m_customBuffer2 = (ushort)(data.m_customBuffer2 + 1);
                 }
@@ -82,6 +94,10 @@ namespace MoreOutsideInteraction.Patch
                 {
                     data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + 1);
                 }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
+                {
+                    data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + 1);
+                }
                 data.m_fireIntensity = 250;
             }
             else if (data.m_electricityBuffer != 0)
@@ -97,7 +113,14 @@ namespace MoreOutsideInteraction.Patch
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Outgoing)
                 {
-                    if (Singleton<SimulationManager>.instance.m_randomizer.Int32(16u) == 0)
+                    if (Can16timesUpdate(buildingID))
+                    {
+                        data.m_customBuffer1 = (ushort)(data.m_customBuffer1 + 1);
+                    }
+                }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
+                {
+                    if (Can16timesUpdate(buildingID))
                     {
                         data.m_customBuffer1 = (ushort)(data.m_customBuffer1 + 1);
                     }
@@ -463,11 +486,29 @@ namespace MoreOutsideInteraction.Patch
                     AddFireOffers(buildingID, ref data);
                     AddSickOffers(buildingID, ref data);
                 }
+                else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
+                {
+                    AddPoliceOffers(buildingID, ref data);
+                    AddFireOffers(buildingID, ref data);
+                    AddSickOffers(buildingID, ref data);
+                    AddDeadOffers(buildingID, ref data);
+                }
                 else
                 {
                     AddDeadOffers(buildingID, ref data);
                 }
             }
+        }
+
+        public static bool Can16timesUpdate(ushort ID)
+        {
+            uint currentFrameIndex = Singleton<SimulationManager>.instance.m_currentFrameIndex;
+            int frameIndex = (int)(currentFrameIndex & 4095u);
+            if (((frameIndex >> 8) & 15u) == (ID & 15u))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
