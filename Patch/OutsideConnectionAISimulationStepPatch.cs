@@ -92,17 +92,17 @@ namespace MoreOutsideInteraction.Patch
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
-                    data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + 1);
+                    data.m_waterBuffer = (ushort)(data.m_waterBuffer + 1);
                 }
                 else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
                 {
-                    data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + 1);
+                    data.m_waterBuffer = (ushort)(data.m_waterBuffer + 1);
                 }
                 data.m_fireIntensity = 250;
             }
-            else if (data.m_electricityBuffer != 0)
+            else if (data.m_waterBuffer != 0)
             {
-                data.m_electricityBuffer = 0;
+                data.m_waterBuffer = 0;
                 data.m_fireIntensity = 0;
                 TransferManager.TransferOffer offer = default(TransferManager.TransferOffer);
                 offer.Building = buildingID;
@@ -154,9 +154,9 @@ namespace MoreOutsideInteraction.Patch
                 data.m_garbageBuffer = 65000;
             }
 
-            if (data.m_electricityBuffer > 65000)
+            if (data.m_waterBuffer > 65000)
             {
-                data.m_electricityBuffer = 65000;
+                data.m_waterBuffer = 65000;
             }
         }
 
@@ -402,7 +402,7 @@ namespace MoreOutsideInteraction.Patch
                 {
                     if (instance1.m_randomizer.Int32(16u) == 0)
                     {
-                        if ((data.m_electricityBuffer - (num27 - num26) * 100) > 200)
+                        if ((data.m_waterBuffer - (num27 - num26) * 100) > 200)
                         {
                             offer = default(TransferManager.TransferOffer);
                             offer.Priority = 2;
@@ -416,7 +416,7 @@ namespace MoreOutsideInteraction.Patch
                 }
                 else
                 {
-                    if ((data.m_electricityBuffer - (num27 - num26) * 100) > 200)
+                    if ((data.m_waterBuffer - (num27 - num26) * 100) > 200)
                     {
                         offer = default(TransferManager.TransferOffer);
                         offer.Priority = instance1.m_randomizer.Int32(3);

@@ -13,7 +13,7 @@ namespace MoreOutsideInteraction.Patch
         }
         public static bool Prefix(ref Building data, TransferManager.TransferReason material, ref int amountDelta)
         {
-            if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
+            if (((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming) || ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing))
             {
                 if (material == TransferManager.TransferReason.Garbage)
                 {
@@ -75,25 +75,27 @@ namespace MoreOutsideInteraction.Patch
                 }
                 else if (material == TransferManager.TransferReason.Fire)
                 {
-                    if (data.m_electricityBuffer < 0)
+                    if (data.m_waterBuffer < 0)
                     {
                         DebugLog.LogToFileOnly("Error: fire < 0 in outside building, should be wrong");
                         amountDelta = 0;
                     }
                     else
                     {
-                        if (data.m_electricityBuffer + amountDelta * 100 <= 0)
+                        if (data.m_waterBuffer + amountDelta * 100 <= 0)
                         {
-                            amountDelta = -data.m_electricityBuffer / 100;
+                            amountDelta = -data.m_waterBuffer / 100;
                         }
-                        data.m_electricityBuffer = (ushort)(data.m_electricityBuffer + amountDelta * 100);
+                        data.m_waterBuffer = (ushort)(data.m_waterBuffer + amountDelta * 100);
                     }
                 }
                 else
                 {
                 }
             }
-            else
+
+
+            if (((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Outgoing) || ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing))
             {
                 if (material == TransferManager.TransferReason.GarbageMove)
                 {
