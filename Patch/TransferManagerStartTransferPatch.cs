@@ -35,7 +35,6 @@ namespace MoreOutsideInteraction.Patch
         {
             if (material == TransferManager.TransferReason.GarbageMove)
             {
-                DebugLog.LogToFileOnly("Find StartMoreTransfer GarbageMove");
                 VehicleInfo randomVehicleInfo2 = Singleton<VehicleManager>.instance.GetRandomVehicleInfo(ref Singleton<SimulationManager>.instance.m_randomizer, ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level1);
                 if (randomVehicleInfo2 != null)
                 {
