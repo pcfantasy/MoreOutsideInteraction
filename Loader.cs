@@ -1,16 +1,11 @@
-﻿using ColossalFramework.UI;
-using ICities;
-using UnityEngine;
-using System.IO;
+﻿using ICities;
 using ColossalFramework;
 using System.Reflection;
-using System;
-using System.Linq;
-using ColossalFramework.Math;
 using System.Collections.Generic;
 using MoreOutsideInteraction.Util;
 using MoreOutsideInteraction.CustomAI;
 using CitiesHarmony.API;
+using System;
 
 namespace MoreOutsideInteraction
 {
@@ -21,6 +16,7 @@ namespace MoreOutsideInteraction
         public static bool HarmonyDetourInited = false;
         public static bool HarmonyDetourFailed = true;
         public static bool isRealCityRunning = false;
+        public static bool isRealCityV10 = false;
 
         public override void OnCreated(ILoading loading)
         {
@@ -106,6 +102,19 @@ namespace MoreOutsideInteraction
         public void InitDetour()
         {
             isRealCityRunning = CheckRealCityIsLoaded();
+            if (isRealCityRunning)
+            {
+                Version RealCity_Version = Assembly.Load("RealCity").GetName().Version;
+                if (RealCity_Version > new Version(10, 0, 0, 0))
+                {
+                    DebugLog.LogToFileOnly($"Detect RealCity V10, version = {RealCity_Version}");
+                    isRealCityV10 = true;
+                }
+                else
+                {
+                    isRealCityV10 = false;
+                }
+            }
             DetourInited = true;
         }
 

@@ -1,5 +1,6 @@
 ﻿using ColossalFramework;
 using HarmonyLib;
+using MoreOutsideInteraction.Util;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -79,7 +80,14 @@ namespace MoreOutsideInteraction.Patch
                             x = (x > 0) ? x : -x;
                             z = (z > 0) ? z : -z;
                             double distance = (x + z);
-                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * distance), ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                            int money = (int)(num * distance);
+                            Singleton<EconomyManager>.instance.AddPrivateIncome(money, ItemClass.Service.HealthCare, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                            if (Loader.isRealCityV10)
+                            {
+                                RealCityUtil.InitDelegate();
+                                if (RealCityUtil.GetRealCityV10())
+                                    RealCityUtil.SetOutsideGovermentMoney(RealCityUtil.GetOutsideGovermentMoney() - money);
+                            }
                         }
                     }
                 }

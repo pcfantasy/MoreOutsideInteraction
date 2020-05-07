@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using HarmonyLib;
 using MoreOutsideInteraction.CustomAI;
+using MoreOutsideInteraction.Util;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -18,8 +19,24 @@ namespace MoreOutsideInteraction.Patch
         {
             if (data.Info.m_class.m_service == ItemClass.Service.Road)
             {
-                ProcessOutsideDemand(buildingID, ref data);
-                AddOffers(buildingID, ref data);
+                bool canAddOffer = true;
+                if (Loader.isRealCityV10)
+                {
+                    RealCityUtil.InitDelegate();
+                    if (RealCityUtil.GetRealCityV10())
+                    {
+                        if (RealCityUtil.GetOutsideGovermentMoney() < 0)
+                        {
+                            canAddOffer = false;
+                        }
+                    }
+                }
+
+                if (canAddOffer)
+                {
+                    ProcessOutsideDemand(buildingID, ref data);
+                    AddOffers(buildingID, ref data);
+                }
             }
         }
 

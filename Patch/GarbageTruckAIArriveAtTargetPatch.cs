@@ -2,6 +2,7 @@
 using ColossalFramework.Math;
 using HarmonyLib;
 using MoreOutsideInteraction.CustomAI;
+using MoreOutsideInteraction.Util;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -68,8 +69,15 @@ namespace MoreOutsideInteraction.Patch
                     x = (x > 0) ? x : -x;
                     z = (z > 0) ? z : -z;
                     double distance = (x + z);
-                    Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                    int money = (int)(-num * (distance / 4000f));
+                    Singleton<EconomyManager>.instance.AddPrivateIncome(money, ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
                     CustomPlayerBuildingAI.canReturn[vehicleID] = true;
+                    if (Loader.isRealCityV10)
+                    {
+                        RealCityUtil.InitDelegate();
+                        if (RealCityUtil.GetRealCityV10())
+                            RealCityUtil.SetOutsideGovermentMoney(RealCityUtil.GetOutsideGovermentMoney() - money);
+                    }
                 }
                 ushort num3 = instance.FindBuilding(instance.m_buildings.m_buffer[(int)data.m_targetBuilding].m_position, 200f, info.m_class.m_service, ItemClass.SubService.None, Building.Flags.Outgoing, Building.Flags.Incoming);
                 if (num3 != 0)
@@ -128,7 +136,14 @@ namespace MoreOutsideInteraction.Patch
                             x = (x > 0) ? x : -x;
                             z = (z > 0) ? z : -z;
                             double distance = (x + z);
-                            Singleton<EconomyManager>.instance.AddPrivateIncome((int)(num * (distance / 4000f)), ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                            int money = (int)(num * (distance / 4000f));
+                            Singleton<EconomyManager>.instance.AddPrivateIncome(money, ItemClass.Service.Garbage, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                            if (Loader.isRealCityV10)
+                            {
+                                RealCityUtil.InitDelegate();
+                                if (RealCityUtil.GetRealCityV10())
+                                    RealCityUtil.SetOutsideGovermentMoney(RealCityUtil.GetOutsideGovermentMoney() - money);
+                            }
                         }
                     }
                 }

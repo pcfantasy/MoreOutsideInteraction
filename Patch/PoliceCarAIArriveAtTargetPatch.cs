@@ -2,6 +2,7 @@
 using ColossalFramework.Math;
 using HarmonyLib;
 using MoreOutsideInteraction.CustomAI;
+using MoreOutsideInteraction.Util;
 using System;
 using System.Reflection;
 using UnityEngine;
@@ -40,8 +41,15 @@ namespace MoreOutsideInteraction.Patch
                         x = (x > 0) ? x : -x;
                         z = (z > 0) ? z : -z;
                         double distance = (x + z);
-                        Singleton<EconomyManager>.instance.AddPrivateIncome((int)(-num * (distance * 2f)), ItemClass.Service.PoliceDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
+                        int money = (int)(-num * (distance * 2f));
+                        Singleton<EconomyManager>.instance.AddPrivateIncome(money, ItemClass.Service.PoliceDepartment, ItemClass.SubService.None, ItemClass.Level.Level3, 115333);
                         CustomPlayerBuildingAI.canReturn[vehicleID] = true;
+                        if (Loader.isRealCityV10)
+                        {
+                            RealCityUtil.InitDelegate();
+                            if (RealCityUtil.GetRealCityV10())
+                                RealCityUtil.SetOutsideGovermentMoney(RealCityUtil.GetOutsideGovermentMoney() - money);
+                        }
                     }
                 }
 
