@@ -47,15 +47,18 @@ namespace MoreOutsideInteraction.Patch
             {
                 if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
                 {
-                    data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 40);
+                    if (MoreOutsideInteraction.garbageToOutside)
+                        data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 40);
                 }
                 else if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.IncomingOutgoing)
                 {
-                    data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 60);
+                    if (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside)
+                        data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 60);
                 }
                 else
                 {
-                    data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 20);
+                    if (MoreOutsideInteraction.garbageFromOutside)
+                        data.m_garbageBuffer = (ushort)(data.m_garbageBuffer + 20);
                 }
             }
             else if (data.m_garbageBuffer != 0)
@@ -183,7 +186,7 @@ namespace MoreOutsideInteraction.Patch
 
             if (CustomPlayerBuildingAI.haveGarbageBuilding && Singleton<UnlockManager>.instance.Unlocked(ItemClass.Service.Garbage) && (MoreOutsideInteraction.garbageFromOutside || MoreOutsideInteraction.garbageToOutside))
             {
-                if ((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming)
+                if (((data.m_flags & Building.Flags.IncomingOutgoing) == Building.Flags.Incoming) && MoreOutsideInteraction.garbageToOutside)
                 {
                     if (data.m_garbageBuffer > 200)
                     {
@@ -242,7 +245,7 @@ namespace MoreOutsideInteraction.Patch
                 }
                 else
                 {
-                    if (data.m_garbageBuffer > 4000)
+                    if ((data.m_garbageBuffer > 4000) && MoreOutsideInteraction.garbageFromOutside)
                     {
                         int car_valid_path = TickPathfindStatus(ref data.m_teens, ref data.m_serviceProblemTimer);
                         SimulationManager instance1 = Singleton<SimulationManager>.instance;
